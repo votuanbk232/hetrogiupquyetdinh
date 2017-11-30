@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="HeTroGiupQuyetDinh1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="DiemCacNam">
+    <Key>
+      <PropertyRef Name="IDVien" />
+      <PropertyRef Name="Nam2014" />
+      <PropertyRef Name="Nam2015" />
+      <PropertyRef Name="Nam2016" />
+      <PropertyRef Name="Nam2017" />
+    </Key>
+    <Property Name="IDVien" Type="int" Nullable="false" />
+    <Property Name="Nam2014" Type="float" Nullable="false" />
+    <Property Name="Nam2015" Type="float" Nullable="false" />
+    <Property Name="Nam2016" Type="float" Nullable="false" />
+    <Property Name="Nam2017" Type="float" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DiemChuan">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdVien" Type="int" />
+    <Property Name="Nam" Type="int" />
+    <Property Name="DiemChuan" Type="float" />
+    <Property Name="Chitieu" Type="int" />
+  </EntityType>
+  <EntityType Name="SoThich">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Ten" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="Vien">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Ten" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Vien_SoThich">
+    <Key>
+      <PropertyRef Name="IdVien" />
+      <PropertyRef Name="IdSoThich" />
+    </Key>
+    <Property Name="IdVien" Type="int" Nullable="false" />
+    <Property Name="IdSoThich" Type="int" Nullable="false" />
+    <Property Name="Diem" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__DiemCacNa__IDVie__35BCFE0A">
+    <End Role="Vien" Type="Self.Vien" Multiplicity="1" />
+    <End Role="DiemCacNam" Type="Self.DiemCacNam" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vien">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="DiemCacNam">
+        <PropertyRef Name="IDVien" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DiemChuan_Vien">
+    <End Role="Vien" Type="Self.Vien" Multiplicity="0..1" />
+    <End Role="DiemChuan" Type="Self.DiemChuan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vien">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="DiemChuan">
+        <PropertyRef Name="IdVien" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Vien_SoThich_SoThich">
+    <End Role="SoThich" Type="Self.SoThich" Multiplicity="1" />
+    <End Role="Vien_SoThich" Type="Self.Vien_SoThich" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SoThich">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Vien_SoThich">
+        <PropertyRef Name="IdSoThich" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Vien_SoThich_Vien">
+    <End Role="Vien" Type="Self.Vien" Multiplicity="1" />
+    <End Role="Vien_SoThich" Type="Self.Vien_SoThich" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vien">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Vien_SoThich">
+        <PropertyRef Name="IdVien" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="HeTroGiupQuyetDinh1ModelStoreContainer">
+    <EntitySet Name="DiemChuan" EntityType="Self.DiemChuan" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SoThich" EntityType="Self.SoThich" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Vien" EntityType="Self.Vien" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Vien_SoThich" EntityType="Self.Vien_SoThich" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DiemCacNam" EntityType="Self.DiemCacNam" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [DiemCacNam].[IDVien] AS [IDVien], 
+    [DiemCacNam].[Nam2014] AS [Nam2014], 
+    [DiemCacNam].[Nam2015] AS [Nam2015], 
+    [DiemCacNam].[Nam2016] AS [Nam2016], 
+    [DiemCacNam].[Nam2017] AS [Nam2017]
+    FROM [dbo].[DiemCacNam] AS [DiemCacNam]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK__DiemCacNa__IDVie__35BCFE0A" Association="Self.FK__DiemCacNa__IDVie__35BCFE0A">
+      <End Role="Vien" EntitySet="Vien" />
+      <End Role="DiemCacNam" EntitySet="DiemCacNam" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DiemChuan_Vien" Association="Self.FK_DiemChuan_Vien">
+      <End Role="Vien" EntitySet="Vien" />
+      <End Role="DiemChuan" EntitySet="DiemChuan" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Vien_SoThich_SoThich" Association="Self.FK_Vien_SoThich_SoThich">
+      <End Role="SoThich" EntitySet="SoThich" />
+      <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Vien_SoThich_Vien" Association="Self.FK_Vien_SoThich_Vien">
+      <End Role="Vien" EntitySet="Vien" />
+      <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

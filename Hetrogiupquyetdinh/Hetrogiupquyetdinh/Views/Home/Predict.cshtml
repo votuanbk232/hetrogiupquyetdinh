@@ -1,0 +1,123 @@
+﻿@model Hetrogiupquyetdinh.ViewModels.BangQuyetDinh
+
+@{
+    ViewBag.Title = "Dự đoán";
+}
+
+<h2>Hệ trợ giúp quyết định: Chọn ngành</h2>
+<p>
+    <i class="fa fa-backward" aria-hidden="true"></i>@Html.ActionLink("Trang chủ", "Index")
+</p>
+<div>
+    <h2 style="text-align:center;">Bảng quyết định</h2>
+    <hr />
+        
+        <table class="table" border="1">
+            @for (int i = 0; i < ViewBag.Dong; i++)
+            {
+
+                
+
+            <tr>
+                @for(int j = 0; j < ViewBag.Cot; j++) {
+
+                    //Tạo style cho 2 dòng cuối: giá trị max và trọng số
+                    var yourStyle = "";
+                    if (i > ViewBag.Dong - 3)
+                    {
+                        yourStyle = "color:red";
+                    }
+                    else
+                    {
+                        yourStyle = "";
+                        //any other conditions and logic
+                    }
+
+                <td style="@yourStyle">
+                  
+                        @Model.Matrix[i, j]
+                </td>
+               }
+            </tr>
+             } 
+        </table>
+    
+</div>
+
+<div>
+    <h2 style="text-align:center;">Bảng chuẩn hóa</h2>
+    <hr />
+
+    <table class="table" border="1">
+        @for (int i = 0; i < ViewBag.Dong-2; i++)
+        {
+
+
+
+            <tr>
+                @for (int j = 0; j < ViewBag.Cot; j++)
+                {
+
+                    //Tạo style cho 2 dòng cuối: giá trị max và trọng số
+                    var yourStyle = "";
+                    if (i > ViewBag.Dong - 3)
+                    {
+                        yourStyle = "color:red";
+                    }
+                    else
+                    {
+                        yourStyle = "";
+                        //any other conditions and logic
+                    }
+
+                    <td style="@yourStyle">
+
+                        @Model.ChuanHoaMatrix[i, j]
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+
+</div>
+
+<div>
+    <h2 style="text-align:center;">Bảng chuẩn hóa theo trọng số</h2>
+    <hr />
+
+    <table class="table" border="1">
+        @for (int i = 0; i < ViewBag.Dong - 2; i++)
+        {
+
+
+
+            <tr>
+                @for (int j = 0; j < ViewBag.Cot; j++)
+                {
+
+                    //Tạo style cho 2 dòng cuối: giá trị max và trọng số
+                    var yourStyle = "";
+                    if (i > ViewBag.Dong - 3)
+                    {
+                        yourStyle = "color:red";
+                    }
+                    else
+                    {
+                        yourStyle = "";
+                        //any other conditions and logic
+                    }
+
+                    <td style="@yourStyle">
+
+                        @Model.ChuanHoa_TrongSoMatrix[i, j]
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+
+</div>
+
+<p>
+    <i class="fa fa-backward" aria-hidden="true"></i>@Html.ActionLink("Trang chủ", "Index")
+</p>

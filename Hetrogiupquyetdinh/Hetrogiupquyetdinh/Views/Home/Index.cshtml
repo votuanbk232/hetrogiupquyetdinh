@@ -1,0 +1,44 @@
+﻿@using Hetrogiupquyetdinh.Models
+@model IEnumerable<SoThich>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h2>Đề tài 5</h2>
+    <h3>Trợ giúp thí sinh điều chỉnh nguyện vọng ngành</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        @using (Html.BeginForm("Predict", "Home"))
+        {
+
+                @*sở thích*@
+            <p>Sở thích:</p>
+            @Html.DropDownList(
+            "Id",
+            ViewBag.SoThich as SelectList, "Chọn sở thích",
+            new { @class = "textbox" })
+            <div>
+                <br/>
+            </div>
+                @*điểm*@
+            <span>Điểm số:</span>
+            @Html.TextBox("Diem", null, new { @class = "form-control",@placeholder="Nhập điểm của bạn..."})
+            <div>
+                <br />
+            </div>
+                @*submit*@
+                <input type="submit" name="submit" value="Gợi ý" class = "form-control" style="width:61px;background-color:aqua;"  />
+        }
+        
+       
+    </div>
+    <div class="col-md-4">
+       
+    </div>
+    <div class="col-md-4">
+       
+    </div>
+</div>

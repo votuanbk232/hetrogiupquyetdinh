@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="HeTroGiupQuyetDinh1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="DiemChuan">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IdVien" Type="Int32" />
+    <Property Name="Nam" Type="Int32" />
+    <Property Name="DiemChuan1" Type="Double" />
+    <Property Name="Chitieu" Type="Int32" />
+    <NavigationProperty Name="Vien" Relationship="Self.FK_DiemChuan_Vien" FromRole="DiemChuan" ToRole="Vien" />
+  </EntityType>
+  <EntityType Name="SoThich">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Ten" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Vien_SoThich" Relationship="Self.FK_Vien_SoThich_SoThich" FromRole="SoThich" ToRole="Vien_SoThich" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Vien">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Ten" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="DiemChuans" Relationship="Self.FK_DiemChuan_Vien" FromRole="Vien" ToRole="DiemChuan" />
+    <NavigationProperty Name="DiemCacNams" Relationship="Self.FK__DiemCacNa__IDVie__35BCFE0A" FromRole="Vien" ToRole="DiemCacNam" />
+    <NavigationProperty Name="Vien_SoThich" Relationship="Self.FK_Vien_SoThich_Vien" FromRole="Vien" ToRole="Vien_SoThich" />
+  </EntityType>
+  <EntityType Name="Vien_SoThich">
+    <Key>
+      <PropertyRef Name="IdVien" />
+      <PropertyRef Name="IdSoThich" />
+    </Key>
+    <Property Name="IdVien" Type="Int32" Nullable="false" />
+    <Property Name="IdSoThich" Type="Int32" Nullable="false" />
+    <Property Name="Diem" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="SoThich" Relationship="Self.FK_Vien_SoThich_SoThich" FromRole="Vien_SoThich" ToRole="SoThich" />
+    <NavigationProperty Name="Vien" Relationship="Self.FK_Vien_SoThich_Vien" FromRole="Vien_SoThich" ToRole="Vien" />
+  </EntityType>
+  <EntityType Name="DiemCacNam">
+    <Key>
+      <PropertyRef Name="IDVien" />
+      <PropertyRef Name="Nam2014" />
+      <PropertyRef Name="Nam2015" />
+      <PropertyRef Name="Nam2016" />
+      <PropertyRef Name="Nam2017" />
+    </Key>
+    <Property Name="IDVien" Type="Int32" Nullable="false" />
+    <Property Name="Nam2014" Type="Double" Nullable="false" />
+    <Property Name="Nam2015" Type="Double" Nullable="false" />
+    <Property Name="Nam2016" Type="Double" Nullable="false" />
+    <Property Name="Nam2017" Type="Double" Nullable="false" />
+    <NavigationProperty Name="Vien" Relationship="Self.FK__DiemCacNa__IDVie__35BCFE0A" FromRole="DiemCacNam" ToRole="Vien" />
+  </EntityType>
+  <Association Name="FK_DiemChuan_Vien">
+    <End Role="Vien" Type="Self.Vien" Multiplicity="0..1" />
+    <End Role="DiemChuan" Type="Self.DiemChuan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vien">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="DiemChuan">
+        <PropertyRef Name="IdVien" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Vien_SoThich_SoThich">
+    <End Role="SoThich" Type="Self.SoThich" Multiplicity="1" />
+    <End Role="Vien_SoThich" Type="Self.Vien_SoThich" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SoThich">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Vien_SoThich">
+        <PropertyRef Name="IdSoThich" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__DiemCacNa__IDVie__35BCFE0A">
+    <End Role="Vien" Type="Self.Vien" Multiplicity="1" />
+    <End Role="DiemCacNam" Type="Self.DiemCacNam" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vien">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="DiemCacNam">
+        <PropertyRef Name="IDVien" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Vien_SoThich_Vien">
+    <End Role="Vien" Type="Self.Vien" Multiplicity="1" />
+    <End Role="Vien_SoThich" Type="Self.Vien_SoThich" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vien">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Vien_SoThich">
+        <PropertyRef Name="IdVien" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="HeTroGiupQuyetDinh1Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="DiemChuans" EntityType="Self.DiemChuan" />
+    <EntitySet Name="SoThiches" EntityType="Self.SoThich" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="Viens" EntityType="Self.Vien" />
+    <EntitySet Name="Vien_SoThich" EntityType="Self.Vien_SoThich" />
+    <EntitySet Name="DiemCacNams" EntityType="Self.DiemCacNam" />
+    <AssociationSet Name="FK_DiemChuan_Vien" Association="Self.FK_DiemChuan_Vien">
+      <End Role="Vien" EntitySet="Viens" />
+      <End Role="DiemChuan" EntitySet="DiemChuans" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Vien_SoThich_SoThich" Association="Self.FK_Vien_SoThich_SoThich">
+      <End Role="SoThich" EntitySet="SoThiches" />
+      <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
+    </AssociationSet>
+    <AssociationSet Name="FK__DiemCacNa__IDVie__35BCFE0A" Association="Self.FK__DiemCacNa__IDVie__35BCFE0A">
+      <End Role="Vien" EntitySet="Viens" />
+      <End Role="DiemCacNam" EntitySet="DiemCacNams" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Vien_SoThich_Vien" Association="Self.FK_Vien_SoThich_Vien">
+      <End Role="Vien" EntitySet="Viens" />
+      <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
