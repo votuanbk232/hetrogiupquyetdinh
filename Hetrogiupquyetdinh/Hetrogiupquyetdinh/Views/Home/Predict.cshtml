@@ -6,8 +6,12 @@
 
 <h2>Hệ trợ giúp quyết định: Chọn ngành</h2>
 <p>
-    <i class="fa fa-backward" aria-hidden="true"></i>@Html.ActionLink("Trang chủ", "Index")
+    <i class="fa fa-backward"></i>@Html.ActionLink("Trang chủ", "Index")
 </p>
+<div style="text-align:center;">
+    <h2>Kết quả trợ giúp</h2>
+    <h2 style="color:blue;">@ViewBag.PredicttVien</h2>
+</div>
 <div>
     <h2 style="text-align:center;">Bảng quyết định</h2>
     <hr />
@@ -15,9 +19,6 @@
         <table class="table" border="1">
             @for (int i = 0; i < ViewBag.Dong; i++)
             {
-
-                
-
             <tr>
                 @for(int j = 0; j < ViewBag.Cot; j++) {
 
@@ -27,13 +28,16 @@
                     {
                         yourStyle = "color:red";
                     }
+                 
                     else
                     {
                         yourStyle = "";
                         //any other conditions and logic
                     }
 
-                <td style="@yourStyle">
+
+
+                <td style="@yourStyle;"  >
                   
                         @Model.Matrix[i, j]
                 </td>
@@ -51,19 +55,21 @@
     <table class="table" border="1">
         @for (int i = 0; i < ViewBag.Dong-2; i++)
         {
-
-
-
             <tr>
                 @for (int j = 0; j < ViewBag.Cot; j++)
                 {
 
                     //Tạo style cho 2 dòng cuối: giá trị max và trọng số
                     var yourStyle = "";
+                    if (i.ToString().Equals(ViewBag.DongMax))
+                    {
+                        yourStyle = "color:blue";
+                    }
                     if (i > ViewBag.Dong - 3)
                     {
                         yourStyle = "color:red";
                     }
+                    
                     else
                     {
                         yourStyle = "";
@@ -86,18 +92,15 @@
     <hr />
 
     <table class="table" border="1">
-        @for (int i = 0; i < ViewBag.Dong - 2; i++)
+        @for (int i = 0; i < ViewBag.Dong; i++)
         {
-
-
-
             <tr>
-                @for (int j = 0; j < ViewBag.Cot; j++)
+                @for (int j = 0; j < ViewBag.Cot+3; j++)
                 {
 
                     //Tạo style cho 2 dòng cuối: giá trị max và trọng số
                     var yourStyle = "";
-                    if (i > ViewBag.Dong - 3)
+                    if (i > ViewBag.Dong - 3 )
                     {
                         yourStyle = "color:red";
                     }
@@ -109,7 +112,7 @@
 
                     <td style="@yourStyle">
 
-                        @Model.ChuanHoa_TrongSoMatrix[i, j]
+                        @Model.Matranlituong[i, j]
                     </td>
                 }
             </tr>

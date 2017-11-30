@@ -26,9 +26,9 @@ namespace Hetrogiupquyetdinh.Controllers
         public ActionResult Predict(int Id,string Diem)
         {
             //lấy đc Id sở thích và điểm
-
+            //double test = Convert.ToDouble("-3.5");
             //từ Id lấy sở thích
-            using(HeTroGiupQuyetDinh1Entities db=new HeTroGiupQuyetDinh1Entities())
+            using (HeTroGiupQuyetDinh1Entities db=new HeTroGiupQuyetDinh1Entities())
             {
                 SoThich st = db.SoThiches.SingleOrDefault(x => x.Id == Id);
                 //lấy số dòng của ma trận chính là số lượng viện trong bảng DiemCacNam
@@ -102,9 +102,78 @@ namespace Hetrogiupquyetdinh.Controllers
                 bangquyetdinh.Matrix = matrix;
 
                 bangquyetdinh.ChuanHoaMatrix = ChuanHoa(matrix);
-                bangquyetdinh.ChuanHoa_TrongSoMatrix = ChuanHoa_TrongSo(matrix);
+                bangquyetdinh.ChuanHoa_TrongSoMatrix = ChuanHoa_TrongSo(ChuanHoa(matrix));
+                
+                int dongchuanhoa = bangquyetdinh.ChuanHoa_TrongSoMatrix.GetLength(0); //số hàng: với 2 ngành là 5
+                int cotchuanhoa = bangquyetdinh.ChuanHoa_TrongSoMatrix.GetLength(1); //số cột là 6: có 2 ngành
+                //từ bảng chuanhoa(matrix), thêm 2 dòng cho 2 phương án lí tưởng
+                //getleng là 5, => hàng thứ 4
+                //lí tưởng tốt
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0)-2, 1] = GetMaxAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 1);
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0)-2, 2] = GetMaxAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 2);
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0)-2, 3] = GetMaxAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 3);
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0)-2, 4] = GetMaxAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 4);
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0)-2, 5] = GetMaxAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 5);
+                //lí tưởng xấu
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0) - 1, 1] = GetMinAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 1);
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0) - 1, 2] = GetMinAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 2);
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0) - 1, 3] = GetMinAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 3);
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0) - 1, 4] = GetMinAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 4);
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0) - 1, 5] = GetMinAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 5);
 
-                ViewBag.Dong = dong+3;
+                //đổi tên hàng lí tưởng xấu và tốt:
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0) - 2, 0] = "Lí tưởng tốt(A*)";
+                bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0) - 1, 0] = "Lí tưởng xấu(A-)";
+
+                //khoảng cách với lí tưởng tốt và xấu: thêm 2 cột lí tưởng và 1 cột độ tương tự=>9
+                string[,] matranlituong = new string[bangquyetdinh.ChuanHoa_TrongSoMatrix.GetLength(0),9];
+                //tên cột
+                matranlituong[0, 6] = "Khảng cách tới A*(S*)";
+                matranlituong[0, 7] = "Khoảng cách tới A-(S-)";
+                matranlituong[0, 8] = "Phương án hợp lí C*";
+                for (int i = 0; i < bangquyetdinh.ChuanHoa_TrongSoMatrix.GetLength(0); i++)
+                {
+                    for(int j = 0; j < 6; j++)
+                    {
+                        matranlituong[i, j] = bangquyetdinh.ChuanHoa_TrongSoMatrix[i, j];
+                    }
+                }
+                for (int i = 0; i < diemcacnams.Count(); i++)
+                {
+                    //so với tốt
+                    //bangquyetdinh.ChuanHoa_TrongSoMatrix[i+1, 6] = GetKhoangCachToGiaiPhapLiTuong(bangquyetdinh.ChuanHoa_TrongSoMatrix,i+1, 2);
+                    matranlituong[i + 1, 6] = GetKhoangCachToGiaiPhapLiTuong(bangquyetdinh.ChuanHoa_TrongSoMatrix, i + 1, 2);
+                    //so với xấu
+                    matranlituong[i + 1, 7] = GetKhoangCachToGiaiPhapLiTuong(bangquyetdinh.ChuanHoa_TrongSoMatrix, i + 1, 1);
+                    //độ tương tự
+                    matranlituong[i + 1, 8] = GetDoTuongTu(matranlituong, i + 1).ToString();
+                }
+                bangquyetdinh.Matranlituong = matranlituong;
+
+                ///từ đây ta lấy đc độ tương tự tới phương án hợp lí
+                //lấy giá trị max của cột C*
+                //từ giá trị max => Tên viện
+                double Cmax=0;
+                string predictVien="";
+                string dongMax = "";
+
+                for (int i = 0; i < diemcacnams.Count;i++)
+                {
+                    if (Convert.ToDouble(matranlituong[i+1, 8]) > Cmax)
+                    {
+                        Cmax = Convert.ToDouble(matranlituong[i+1, 8]);
+                        predictVien = matranlituong[i + 1, 0];
+                        dongMax = (i+1).ToString();
+                    }
+
+                }
+                ViewBag.PredicttVien = "Yêu cầu trợ giúp: "+st.Ten+ " ,"+Diem+" điểm.Chọn ngành: "+predictVien;
+                ViewBag.CMax = Cmax;
+                ViewBag.DongMax = dongMax;
+                
+
+
+                ViewBag.Dong = dong+3; //số dòng=số lượng viện + thêm 3
                 ViewBag.Cot = cot;
                 return View(bangquyetdinh);
 
@@ -164,6 +233,25 @@ namespace Hetrogiupquyetdinh.Controllers
             }
             return max;
         }
+        //lấy giá trị min mỗi cột 
+        public string GetMinAColumn(string[,] a, int cot)
+        {
+            string min = a[1, cot]; //giả sử max ở hàng đầu( ko kể hàng header)
+            //int x = a.GetLength(1); //bằng số cột
+            //int y = a.GetLength(0); //bằng số hàng
+            //var width = input2DArray.GetLength(0);
+            //var height = input2DArray.GetLength(1);
+            for (int i = 1; i < a.GetLength(0) - 2; i++)
+            {
+                //nếu tồn tại giá trị lớn hơn thì trả về số đó
+                //a.Length=30 tức 6(cột)*5(hàng)
+                if (Convert.ToDouble(a[i, cot]) < Convert.ToDouble(min))
+                {
+                    min = a[i, cot];
+                }
+            }
+            return min;
+        }
         //chuẩn hóa: x/căn tổng x bình
         //public double ChuanHoa(string[,] a,int hang, int cot)
         //{
@@ -210,18 +298,22 @@ namespace Hetrogiupquyetdinh.Controllers
                         tongbinhphuong += Convert.ToDouble(a[i, j])* Convert.ToDouble(a[i, j]);
                     }
                 //chuẩn hóa số
-                for (int i = 1; i < a.GetLength(0) - 2; i++)
+                for (int i = 1; i < a.GetLength(0)-2; i++)
                 {
                     //tính tổng bình phương cột: cot
                     b[i,j]=(Convert.ToDouble(a[i, j]) / Math.Sqrt(tongbinhphuong)).ToString();
                 }
+                for (int i = a.GetLength(0) - 2; i < a.GetLength(0); i++)
+                {
+                    //tính tổng bình phương cột: cot
+                    b[i, j] = a[i, j];
+                }
+                tongbinhphuong = 0;
 
             }
             return b;
 
         }
-
-
         //ma trận sau khi tính giá trị theo trọng số
         public string[,] ChuanHoa_TrongSo(string[,] a)
         {
@@ -229,7 +321,7 @@ namespace Hetrogiupquyetdinh.Controllers
             //dòng từ 1 tới leng(0)-2
             //cột từ 1 tới 5
 
-            double tongbinhphuong = 0;
+            //double tongbinhphuong = 0;
             //hàng 0:
             for (int i = 0; i < 6; i++)
             {
@@ -247,26 +339,56 @@ namespace Hetrogiupquyetdinh.Controllers
             {
                 //hàng từ 1 tới hàng leng-2
                 //tính tổng bình phương từng cột
-                for (int i = 1; i < a.GetLength(0) - 2; i++)
-                {
-                    //tính tổng bình phương cột: cot
-                    tongbinhphuong += Convert.ToDouble(a[i, j]) * Convert.ToDouble(a[i, j]);
-                }
+                //for (int i = 1; i < a.GetLength(0) - 2; i++)
+                //{
+                //    //tính tổng bình phương cột: cot
+                //    tongbinhphuong += Convert.ToDouble(a[i, j]) * Convert.ToDouble(a[i, j]);
+                //}
                 //chuẩn hóa số
                 int dongcuoiIndex=a.GetLength(0) - 1;
-                for (int i = 1; i < a.GetLength(0); i++)
+                for (int i = 1; i < a.GetLength(0)-2; i++)
                 {
                     //tính tổng bình phương cột: cot
-                    b[i, j] = ((Convert.ToDouble(a[i, j]) / Math.Sqrt(tongbinhphuong))*Convert.ToDouble(a[dongcuoiIndex,j ])).ToString();
+                    b[i, j] = (Convert.ToDouble(a[i, j])*Convert.ToDouble(a[dongcuoiIndex,j ])).ToString();
                 }
 
             }
             return b;
 
         }
+        //public string GetMaxAColumnOfMatrantrongso()
+        //{
 
+        //}
+        //khoảng cách mỗi phương án tới giải pháp lí tưởng
+        public string GetKhoangCachToGiaiPhapLiTuong(string[,] a,int hang, int lituong)
+        {
+            double x=0;
+            //leng-1: xấu, leng-2: tốt
+            //từ cột 1 tới 5
+            for(int i = 1; i < 6; i++)
+            {
+                //hang giải pháp=1=> so với xấu
+                //hàng giải pháp =2=> so với tốt
+                double hangsosanh = Convert.ToDouble(a[hang, i]);
+                double hanggiaiphap = Convert.ToDouble(a[a.GetLength(0) - lituong, i]);
+                x += (hangsosanh -hanggiaiphap)* (hangsosanh - hanggiaiphap);
+            }
+            
+            return Math.Sqrt(x).ToString();
 
-
+        }
+        //độ tương tự
+        public double GetDoTuongTu(string[,] a,int hang)
+        {
+            double tong = Convert.ToDouble(a[hang, a.GetLongLength(1) - 2]) + Convert.ToDouble(a[hang, a.GetLongLength(1) - 3]);
+            return Convert.ToDouble(a[hang, a.GetLongLength(1) - 2]) / tong;
+        }
+        //lấy tên viện với điều kiện cột C(cuối cùng max)
+        //public string GetTenVie(string[,] a)
+        //{
+        //    for(int i=1;i<)
+        //}
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
