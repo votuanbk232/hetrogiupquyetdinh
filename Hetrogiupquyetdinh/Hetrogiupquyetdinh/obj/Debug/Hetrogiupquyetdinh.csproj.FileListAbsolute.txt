@@ -80,7 +80,6 @@ F:\Desicion support system\project\Hetrogiupquyetdinh\Hetrogiupquyetdinh\bin\Mic
 F:\Desicion support system\project\Hetrogiupquyetdinh\Hetrogiupquyetdinh\obj\Debug\Hetrogiupquyetdinh.csprojResolveAssemblyReference.cache
 F:\Desicion support system\project\Hetrogiupquyetdinh\Hetrogiupquyetdinh\obj\Debug\Hetrogiupquyetdinh.dll
 F:\Desicion support system\project\Hetrogiupquyetdinh\Hetrogiupquyetdinh\obj\Debug\Hetrogiupquyetdinh.pdb
-F:\Desicion support system\git\hetrogiupquyetdinh\Hetrogiupquyetdinh\Hetrogiupquyetdinh\obj\Debug\Hetrogiupquyetdinh.csprojResolveAssemblyReference.cache
 F:\Desicion support system\git\hetrogiupquyetdinh\Hetrogiupquyetdinh\Hetrogiupquyetdinh\obj\Debug\Hetrogiupquyetdinh.dll
 F:\Desicion support system\git\hetrogiupquyetdinh\Hetrogiupquyetdinh\Hetrogiupquyetdinh\obj\Debug\Hetrogiupquyetdinh.pdb
 F:\Desicion support system\git\hetrogiupquyetdinh\Hetrogiupquyetdinh\Hetrogiupquyetdinh\bin\ApplicationInsights.config
@@ -162,3 +161,4 @@ F:\Desicion support system\git\hetrogiupquyetdinh\Hetrogiupquyetdinh\Hetrogiupqu
 F:\Desicion support system\git\hetrogiupquyetdinh\Hetrogiupquyetdinh\Hetrogiupquyetdinh\bin\Microsoft.Owin.Security.Google.xml
 F:\Desicion support system\git\hetrogiupquyetdinh\Hetrogiupquyetdinh\Hetrogiupquyetdinh\bin\Microsoft.Owin.Security.Twitter.xml
 F:\Desicion support system\git\hetrogiupquyetdinh\Hetrogiupquyetdinh\Hetrogiupquyetdinh\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+F:\Desicion support system\git\hetrogiupquyetdinh\Hetrogiupquyetdinh\Hetrogiupquyetdinh\obj\Debug\Hetrogiupquyetdinh.csprojResolveAssemblyReference.cache

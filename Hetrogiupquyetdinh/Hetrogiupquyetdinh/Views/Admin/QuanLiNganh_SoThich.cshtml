@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Hetrogiupquyetdinh.Models.Vien_SoThich>
+
+@{
+    ViewBag.Title = "Quản lí sở thích theo viện";
+}
+
+<h2>Quản lí sở thích theo viện</h2>
+
+<p>
+    @Html.ActionLink("Thêm mới", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.IdVien)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IdSoThich)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Diem)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.IdVien)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IdSoThich)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Diem)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        </td>
+    </tr>
+}
+
+</table>

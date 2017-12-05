@@ -26,8 +26,10 @@ namespace Hetrogiupquyetdinh.Models
         }
     
         public virtual DbSet<DiemChuan> DiemChuans { get; set; }
+        public virtual DbSet<Khoi> Khois { get; set; }
         public virtual DbSet<SoThich> SoThiches { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<Truong> Truongs { get; set; }
         public virtual DbSet<Vien> Viens { get; set; }
         public virtual DbSet<Vien_SoThich> Vien_SoThich { get; set; }
         public virtual DbSet<DiemCacNam> DiemCacNams { get; set; }

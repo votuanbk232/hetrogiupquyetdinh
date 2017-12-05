@@ -3,124 +3,201 @@
 @{
     ViewBag.Title = "Dự đoán";
 }
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script>
 
-<h2>Hệ trợ giúp quyết định: Chọn ngành</h2>
-<p>
-    <i class="fa fa-backward"></i>@Html.ActionLink("Trang chủ", "Index")
-</p>
-<div style="text-align:center;">
-    <h2>Kết quả trợ giúp</h2>
-    <h2 style="color:blue;">@ViewBag.PredicttVien</h2>
-</div>
-<div>
-    <h2 style="text-align:center;">Bảng quyết định</h2>
-    <hr />
-        
-        <table class="table" border="1">
-            @for (int i = 0; i < ViewBag.Dong; i++)
+function myFunction1() {
+    var x = document.getElementById("bangquyetdinh");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+function myFunction2() {
+    var x = document.getElementById("bangchuanhoa");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+function myFunction3() {
+    var x = document.getElementById("bangchuanhoatheotrongso");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+
+
+</script>
+<div id="client-result-final" class="col-lg-12">
+    <div style="text-align:center;">
+        <h2 style="color:blue;">@TempData["Yeucau"]</h2>
+        <br />
+        <h2 style="color:blue;"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i>@TempData["Predict"]</h2>
+    </div>
+
+    @*Bảng quyết định*@
+    <div class="col-xs-12 text-center">
+        <button type="button" id="btn-detail" class="btn btn-info" onclick="myFunction1()">
+            Bảng quyết định
+        </button>
+   </div>
+    <hr/>
+        @* <a onclick="myFunction1()" style="cursor:pointer;"><h3 style="text-align:center;color:red;"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Bảng quyết định</h3></a>*@
+        <hr />
+        <div id="bangquyetdinh" style="display:none;">
+
+
+            <table class="table table-hover">
+                @for (int i = 0; i < ViewBag.Dong; i++)
             {
-            <tr>
-                @for(int j = 0; j < ViewBag.Cot; j++) {
+                    <tr>
+                        @for (int j = 0; j < ViewBag.Cot; j++)
+                        {
 
-                    //Tạo style cho 2 dòng cuối: giá trị max và trọng số
-                    var yourStyle = "";
-                    if (i > ViewBag.Dong - 3)
-                    {
-                        yourStyle = "color:red";
-                    }
-                 
-                    else
-                    {
-                        yourStyle = "";
-                        //any other conditions and logic
-                    }
+                            //Tạo style cho 2 dòng cuối: giá trị max và trọng số
+                            var yourStyle = "";
+                            if (i == 0 && j!=0)
+                            {
+                                yourStyle = "background-color:	#7FFFD4;";
+
+                            }
+                            else if (j==0)
+                            {
+                                yourStyle = "background-color:#FFE4C4;";
+                            }
+                            //else if (i > ViewBag.Dong - 3)
+                            //{
+                            //    yourStyle = "background-color:	#FFF8DC;";
+                            //}
+
+                            else
+                            {
+                                yourStyle = "";
+                                //any other conditions and logic
+                            }
 
 
 
-                <td style="@yourStyle;"  >
-                  
+                    <td style="@yourStyle;">
+
                         @Model.Matrix[i, j]
-                </td>
-               }
-            </tr>
-             } 
-        </table>
-    
-</div>
+                    </td>
+                        }
+                    </tr>
+                }
+            </table>
 
-<div>
-    <h2 style="text-align:center;">Bảng chuẩn hóa</h2>
-    <hr />
+        </div>
 
-    <table class="table" border="1">
-        @for (int i = 0; i < ViewBag.Dong-2; i++)
-        {
-            <tr>
-                @for (int j = 0; j < ViewBag.Cot; j++)
-                {
+    <div class="col-xs-12 text-center">
+        <button type="button" id="btn-detail" class="btn btn-info" onclick="myFunction2()">
+            Bảng chuẩn hóa
+        </button>
+    </div>
+    <hr/>
+        @*<a onclick="myFunction2()" style="cursor:pointer;"><h3 style="text-align:center;color:red"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Bảng chuẩn hóa</h3></a>*@
+        <hr />
+        <div id="bangchuanhoa" style="display:none;">
 
-                    //Tạo style cho 2 dòng cuối: giá trị max và trọng số
-                    var yourStyle = "";
-                    if (i.ToString().Equals(ViewBag.DongMax))
-                    {
-                        yourStyle = "color:blue";
-                    }
-                    if (i > ViewBag.Dong - 3)
-                    {
-                        yourStyle = "color:red";
-                    }
-                    
-                    else
-                    {
-                        yourStyle = "";
-                        //any other conditions and logic
-                    }
+            <table class="table table-hover" >
+                @for (int i = 0; i < ViewBag.Dong - 2; i++)
+            {
+                    <tr>
+                        @for (int j = 0; j < ViewBag.Cot; j++)
+                        {
+
+                            //Tạo style cho 2 dòng cuối: giá trị max và trọng số
+                            var yourStyle = "";
+                            if (i == 0 && j != 0)
+                            {
+                                yourStyle = "background-color:	#7FFFD4;";
+
+                            }
+                            else if (j == 0)
+                            {
+                                yourStyle = "background-color:#FFE4C4;";
+                            }
+                            //else if (i > ViewBag.Dong - 3)
+                            //{
+                            //    yourStyle = "background-color:	#FFF8DC;";
+                            //}
+                            else
+                            {
+                                yourStyle = "";
+                                //any other conditions and logic
+                            }
 
                     <td style="@yourStyle">
-
                         @Model.ChuanHoaMatrix[i, j]
                     </td>
+                        }
+                    </tr>
                 }
-            </tr>
-        }
-    </table>
+            </table>
 
-</div>
+        </div>
 
-<div>
-    <h2 style="text-align:center;">Bảng chuẩn hóa theo trọng số</h2>
-    <hr />
+    <div class="col-xs-12 text-center">
+        <button type="button" id="btn-detail" class="btn btn-info" onclick="myFunction3()">
+            Bảng chuẩn hóa theo trọng số
+        </button>
+    </div>
+    <hr/>
+        @*<a onclick="myFunction3()" style="cursor:pointer;"><h3 style="text-align:center;color:red;"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Bảng chuẩn hóa theo trọng số</h3></a>*@
+        <hr />
+        <div id="bangchuanhoatheotrongso" style="display:none;">
 
-    <table class="table" border="1">
-        @for (int i = 0; i < ViewBag.Dong; i++)
-        {
-            <tr>
-                @for (int j = 0; j < ViewBag.Cot+3; j++)
-                {
+            <table class="table table-hover">
+                @for (int i = 0; i < ViewBag.Dong; i++)
+            {
+                    <tr>
+                        @for (int j = 0; j < ViewBag.Cot + 3; j++)
+                        {
 
-                    //Tạo style cho 2 dòng cuối: giá trị max và trọng số
-                    var yourStyle = "";
-                    if (i > ViewBag.Dong - 3 )
-                    {
-                        yourStyle = "color:red";
-                    }
-                    else
-                    {
-                        yourStyle = "";
-                        //any other conditions and logic
-                    }
+                            //Tạo style cho 2 dòng cuối: giá trị max và trọng số
+                            var yourStyle = "";
+                            if (i.ToString().Equals(ViewBag.DongMax))
+                            {
+                                yourStyle = "background-color:green;color:white;";
+
+                            }
+                            else if (i == 0 && j != 0)
+                            {
+                                yourStyle = "background-color:	#7FFFD4;";
+
+                            }
+                            else if (j == 0 )
+                            {
+                                yourStyle = "background-color:#FFE4C4;";
+                            }
+                            //else if (i > ViewBag.Dong - 3)
+                            //{
+                            //    yourStyle = "background-color:	#FFF8DC;";
+                            //}
+                            else
+                            {
+                                yourStyle = "";
+                                //any other conditions and logic
+                            }
 
                     <td style="@yourStyle">
 
                         @Model.Matranlituong[i, j]
                     </td>
+                        }
+                    </tr>
                 }
-            </tr>
-        }
-    </table>
+            </table>
 
-</div>
+        </div>
 
-<p>
-    <i class="fa fa-backward" aria-hidden="true"></i>@Html.ActionLink("Trang chủ", "Index")
-</p>
+
+    </div>

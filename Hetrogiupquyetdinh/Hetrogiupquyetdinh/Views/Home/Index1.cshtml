@@ -1,0 +1,66 @@
+﻿@using Hetrogiupquyetdinh.Models
+@model IEnumerable<SoThich>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/Validation.js"></script>
+
+<div class="jumbotron">
+    <h2>Đề tài 5</h2>
+    <h3>Trợ giúp thí sinh điều chỉnh nguyện vọng ngành</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        @using (Html.BeginForm("Predict", "Home"))
+        {
+            @*trường*@
+            <p>Trường:</p>
+            @Html.DropDownList(
+            "truongID",
+            ViewBag.Truong as SelectList, "Chọn trường",
+            new { @class = "textbox" })
+            <div>
+                <br />
+            </div>
+            //khối
+            <p>Khối:</p>
+            @Html.DropDownList(
+            "khoiID",
+            ViewBag.Khoi as SelectList, "Chọn khối",
+            new { @class = "textbox" })
+            <div>
+                <br />
+            </div>
+                @*sở thích*@
+            <p>Sở thích:</p>
+            @Html.DropDownList(
+            "Id",
+            ViewBag.SoThich as SelectList, "Chọn sở thích",
+            new { @class = "textbox" })
+            @Html.ValidationMessage("SoThichValidate")
+            <div>
+                <br/>
+            </div>
+                @*điểm*@
+            <span>Điểm số:</span>
+            @Html.TextBox("Diem", null, new { @class = "form-control",@placeholder="Nhập điểm của bạn..."})
+            @Html.ValidationMessage("DiemValidate")
+            <div>
+                <br />
+            </div>
+                @*submit*@
+                <input type="submit" name="submit" value="Gợi ý" class = "form-control" style="width:61px;background-color:aqua;" onclick="return IsValid();"  />
+        }
+        
+       
+    </div>
+    <div class="col-md-4">
+       
+    </div>
+    <div class="col-md-4">
+       
+    </div>
+</div>

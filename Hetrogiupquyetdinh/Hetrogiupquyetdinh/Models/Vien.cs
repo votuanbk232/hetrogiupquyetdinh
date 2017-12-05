@@ -24,9 +24,13 @@ namespace Hetrogiupquyetdinh.Models
     
         public int Id { get; set; }
         public string Ten { get; set; }
+        public Nullable<int> TruongID { get; set; }
+        public Nullable<int> KhoiID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DiemChuan> DiemChuans { get; set; }
+        public virtual Khoi Khoi { get; set; }
+        public virtual Truong Truong { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DiemCacNam> DiemCacNams { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -26,6 +26,13 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
     <Property Name="DiemChuan" Type="float" />
     <Property Name="Chitieu" Type="int" />
   </EntityType>
+  <EntityType Name="Khoi">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Ten" Type="nvarchar" MaxLength="50" />
+  </EntityType>
   <EntityType Name="SoThich">
     <Key>
       <PropertyRef Name="Id" />
@@ -43,12 +50,21 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
     <Property Name="version" Type="int" />
     <Property Name="definition" Type="varbinary(max)" />
   </EntityType>
+  <EntityType Name="Truong">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Ten" Type="nvarchar" MaxLength="200" />
+  </EntityType>
   <EntityType Name="Vien">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Ten" Type="nvarchar" MaxLength="50" />
+    <Property Name="TruongID" Type="int" />
+    <Property Name="KhoiID" Type="int" />
   </EntityType>
   <EntityType Name="Vien_SoThich">
     <Key>
@@ -83,6 +99,18 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_Vien_Khoi">
+    <End Role="Khoi" Type="Self.Khoi" Multiplicity="0..1" />
+    <End Role="Vien" Type="Self.Vien" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Khoi">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Vien">
+        <PropertyRef Name="KhoiID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_Vien_SoThich_SoThich">
     <End Role="SoThich" Type="Self.SoThich" Multiplicity="1" />
     <End Role="Vien_SoThich" Type="Self.Vien_SoThich" Multiplicity="*" />
@@ -107,10 +135,24 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_Vien_Truong">
+    <End Role="Truong" Type="Self.Truong" Multiplicity="0..1" />
+    <End Role="Vien" Type="Self.Vien" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Truong">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Vien">
+        <PropertyRef Name="TruongID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <EntityContainer Name="HeTroGiupQuyetDinh1ModelStoreContainer">
     <EntitySet Name="DiemChuan" EntityType="Self.DiemChuan" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Khoi" EntityType="Self.Khoi" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="SoThich" EntityType="Self.SoThich" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Truong" EntityType="Self.Truong" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Vien" EntityType="Self.Vien" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Vien_SoThich" EntityType="Self.Vien_SoThich" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="DiemCacNam" EntityType="Self.DiemCacNam" store:Type="Tables" store:Schema="dbo">
@@ -130,6 +172,10 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
       <End Role="Vien" EntitySet="Vien" />
       <End Role="DiemChuan" EntitySet="DiemChuan" />
     </AssociationSet>
+    <AssociationSet Name="FK_Vien_Khoi" Association="Self.FK_Vien_Khoi">
+      <End Role="Khoi" EntitySet="Khoi" />
+      <End Role="Vien" EntitySet="Vien" />
+    </AssociationSet>
     <AssociationSet Name="FK_Vien_SoThich_SoThich" Association="Self.FK_Vien_SoThich_SoThich">
       <End Role="SoThich" EntitySet="SoThich" />
       <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
@@ -137,6 +183,10 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
     <AssociationSet Name="FK_Vien_SoThich_Vien" Association="Self.FK_Vien_SoThich_Vien">
       <End Role="Vien" EntitySet="Vien" />
       <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Vien_Truong" Association="Self.FK_Vien_Truong">
+      <End Role="Truong" EntitySet="Truong" />
+      <End Role="Vien" EntitySet="Vien" />
     </AssociationSet>
   </EntityContainer>
 </Schema>

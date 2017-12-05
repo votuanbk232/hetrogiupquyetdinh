@@ -14,29 +14,63 @@ namespace Hetrogiupquyetdinh.Controllers
         {
             //Hiển thị Sở thích và điểm số của thí sinh
             List<SoThich> sothichs = new List<SoThich>();
-            using(HeTroGiupQuyetDinh1Entities db=new HeTroGiupQuyetDinh1Entities())
+            List<Truong> truongs = new List<Truong>();
+            List<Khoi> khois = new List<Khoi>();
+            using (HeTroGiupQuyetDinh1Entities db=new HeTroGiupQuyetDinh1Entities())
             {
                 sothichs = db.SoThiches.OrderBy(x => x.Ten).ToList();
+                truongs = db.Truongs.OrderBy(x => x.ID).ToList();
+                khois = db.Khois.OrderBy(x => x.ID).ToList();
                 ViewBag.SoThich = new SelectList (sothichs,"Id","Ten");
+                ViewBag.Truong = new SelectList (truongs,"ID","Ten");
+                ViewBag.Khoi = new SelectList (khois,"ID","Ten");
+
                 return View();
             }
             
         }
 
-        public ActionResult Predict(int Id,string Diem)
+        public ActionResult Predict(int Id,string Diem,string truongID,string khoiID)
         {
+            
+
+            //if (Id.ToString()==null || Id.ToString()==null)
+            //{
+            //    ModelState.AddModelError("SoThichValidate","Vui lòng nhập sở thích!");
+            //    return View("Index");
+            //}
+            //if (String.IsNullOrEmpty(Diem))
+            //{
+            //    ModelState.AddModelError("DiemValidate", "Vui lòng nhập điểm!");
+            //    return View("Index");
+            //}
+
             //lấy đc Id sở thích và điểm
             //double test = Convert.ToDouble("-3.5");
             //từ Id lấy sở thích
             using (HeTroGiupQuyetDinh1Entities db=new HeTroGiupQuyetDinh1Entities())
             {
                 SoThich st = db.SoThiches.SingleOrDefault(x => x.Id == Id);
+                //string t = GetTruongIDByTen(Truong);
+                //List<Vien> viens = db.Viens.Where(x => x.TruongID == t.ID).ToList();
                 //lấy số dòng của ma trận chính là số lượng viện trong bảng DiemCacNam
                 int dong;
                 //số cột chính là số thuộc tính: sở thích và chênh lệch 4 năm từ 2014->2017
                 //int cot = 6; //ví dụ 5 cột thuộc tính và 1 cột phương án
                 int cot = 6; //thử nghiệm
-                List<DiemCacNam> diemcacnams = db.DiemCacNams.ToList();
+                //List<DiemCacNam> diemcacnams = db.DiemCacNams.Where(x=>x.Vien.TruongID.ToString()==truongID)
+                //    .ToList();
+
+
+                //List<DiemCacNam> diemcacnams = (from a in db.DiemCacNams
+                //                                join b in db.Viens on a.IDVien equals b.Id
+                //                                where a.Vien.TruongID.Equals(truongID) 
+                //                                where b.Khoi.ID.Equals(khoiID)
+                //                                select a).ToList();
+
+                string diem= "SELECT  * FROM dbo.DiemCacNam AS d,dbo.Vien AS v WHERE d.IDVien = v.Id AND v.TruongID = "+truongID+" AND v.KhoiID = "+khoiID;
+                List<DiemCacNam> diemcacnams = db.DiemCacNams.SqlQuery(diem).ToList();
+
                 dong = diemcacnams.Count();
 
                 //ma trận quyết định
@@ -71,15 +105,33 @@ namespace Hetrogiupquyetdinh.Controllers
                     //                  ).FirstOrDefault();
                     string sql = "Select * from dbo.Vien_SoThich where IdVien=" + diemcacnams[i].IDVien + " and IdSoThich=" + st.Id;
                     Vien_SoThich v = db.Vien_SoThich.SqlQuery(sql).SingleOrDefault();
-                    matrix[i + 1, 1] = v.Diem.ToString();
+                    if (v == null)
+                    {
+                        matrix[i + 1, 1] = "5";
+
+                    }
+                    else
+                    {
+                        matrix[i + 1, 1] = v.Diem.ToString();
+
+                    }
 
                     //cột 3,4,5,6: chênh lệch năm 2014,15,16,17
-                    //từ ID Viện lấy ra đc điểm năm 2014... của Viện đó
-                    matrix[i + 1, 2] = (Convert.ToDouble(Diem)-GetDiemByIdVien(diemcacnams[i].IDVien, 2014)).ToString();
-                    matrix[i + 1, 3] = (Convert.ToDouble(Diem)-GetDiemByIdVien(diemcacnams[i].IDVien, 2015)).ToString();
-                    matrix[i + 1, 4] = (Convert.ToDouble(Diem)-GetDiemByIdVien(diemcacnams[i].IDVien, 2016)).ToString();
-                    matrix[i + 1, 5] = (Convert.ToDouble(Diem)-GetDiemByIdVien(diemcacnams[i].IDVien, 2017)).ToString();
-                    
+                    //từ ID Viện lấy ra đc điểm năm 2014... của Viện đó==> độ chênh lệch
+
+                    //mục tiêu là chênh lệch phải ít nhất lớn hơn điểm các năm
+                    //matrix[i + 1, 2] = (Convert.ToDouble(Diem)-GetDiemByIdVien(diemcacnams[i].IDVien, 2014)).ToString();
+                    //matrix[i + 1, 3] = (Convert.ToDouble(Diem)-GetDiemByIdVien(diemcacnams[i].IDVien, 2015)).ToString();
+                    //matrix[i + 1, 4] = (Convert.ToDouble(Diem)-GetDiemByIdVien(diemcacnams[i].IDVien, 2016)).ToString();
+                    //matrix[i + 1, 5] = (Convert.ToDouble(Diem)-GetDiemByIdVien(diemcacnams[i].IDVien, 2017)).ToString();
+
+                    matrix[i + 1, 2] = ChuanHoaChenhLechDiem(Convert.ToDouble(Diem), GetDiemByIdVien(diemcacnams[i].IDVien, 2014)).ToString("0.####");
+                    matrix[i + 1, 3] = ChuanHoaChenhLechDiem(Convert.ToDouble(Diem), GetDiemByIdVien(diemcacnams[i].IDVien, 2015)).ToString("0.####");
+                    matrix[i + 1, 4] = ChuanHoaChenhLechDiem(Convert.ToDouble(Diem), GetDiemByIdVien(diemcacnams[i].IDVien, 2016)).ToString("0.####");
+                    matrix[i + 1, 5] = ChuanHoaChenhLechDiem(Convert.ToDouble(Diem), GetDiemByIdVien(diemcacnams[i].IDVien, 2017)).ToString("0.####");
+
+
+
 
                 }
 
@@ -92,11 +144,11 @@ namespace Hetrogiupquyetdinh.Controllers
 
 
                 //thêm hàng trọng số
-                matrix[dong + 2, 1] = 0.1.ToString(); //sở thích
-                matrix[dong + 2, 2] = 0.1.ToString(); //năm 2014
-                matrix[dong + 2, 3] = 0.2.ToString(); //năm 2015
+                matrix[dong + 2, 1] = 0.2.ToString(); //sở thích
+                matrix[dong + 2, 2] = 0.15.ToString(); //năm 2014
+                matrix[dong + 2, 3] = 0.15.ToString(); //năm 2015
                 matrix[dong + 2, 4] = 0.2.ToString(); //năm 2016
-                matrix[dong + 2, 5] = 0.4.ToString(); //năm 2017
+                matrix[dong + 2, 5] = 0.3.ToString(); //năm 2017
 
                 BangQuyetDinh bangquyetdinh = new BangQuyetDinh();
                 bangquyetdinh.Matrix = matrix;
@@ -108,6 +160,9 @@ namespace Hetrogiupquyetdinh.Controllers
                 int cotchuanhoa = bangquyetdinh.ChuanHoa_TrongSoMatrix.GetLength(1); //số cột là 6: có 2 ngành
                 //từ bảng chuanhoa(matrix), thêm 2 dòng cho 2 phương án lí tưởng
                 //getleng là 5, => hàng thứ 4
+
+                //chú ý: mức độ quan trọng âm=> sẽ cộng 2 lần cột đó, khi tính S*
+
                 //lí tưởng tốt
                 bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0)-2, 1] = GetMaxAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 1);
                 bangquyetdinh.ChuanHoa_TrongSoMatrix[matrix.GetLength(0)-2, 2] = GetMaxAColumn(bangquyetdinh.ChuanHoa_TrongSoMatrix, 2);
@@ -146,7 +201,7 @@ namespace Hetrogiupquyetdinh.Controllers
                     //so với xấu
                     matranlituong[i + 1, 7] = GetKhoangCachToGiaiPhapLiTuong(bangquyetdinh.ChuanHoa_TrongSoMatrix, i + 1, 1);
                     //độ tương tự
-                    matranlituong[i + 1, 8] = GetDoTuongTu(matranlituong, i + 1).ToString();
+                    matranlituong[i + 1, 8] = GetDoTuongTu(matranlituong, i + 1).ToString("0.####");
                 }
                 bangquyetdinh.Matranlituong = matranlituong;
 
@@ -167,16 +222,15 @@ namespace Hetrogiupquyetdinh.Controllers
                     }
 
                 }
-                ViewBag.PredicttVien = "Yêu cầu trợ giúp: "+st.Ten+ " ,"+Diem+" điểm.Chọn ngành: "+predictVien;
+                TempData["Yeucau"] = "Yêu cầu trợ giúp: Trường "+ GetTruongByID(Convert.ToInt16(truongID))+", Khối: "+db.Khois.SingleOrDefault(x=>x.ID.ToString()==khoiID).Ten+", Sở thích: " + st.Ten + " ," + Diem + " điểm";
+                TempData["Predict"] = "Chọn ngành: " + predictVien;
+
                 ViewBag.CMax = Cmax;
                 ViewBag.DongMax = dongMax;
                 
-
-
                 ViewBag.Dong = dong+3; //số dòng=số lượng viện + thêm 3
                 ViewBag.Cot = cot;
-                return View(bangquyetdinh);
-
+                return PartialView(bangquyetdinh);
             }
         }
 
@@ -194,7 +248,7 @@ namespace Hetrogiupquyetdinh.Controllers
         {
             using(HeTroGiupQuyetDinh1Entities db=new HeTroGiupQuyetDinh1Entities())
             {
-                DiemCacNam diemcacnam = db.DiemCacNams.SingleOrDefault(x => x.IDVien == id);
+                DiemCacNam diemcacnam = db.DiemCacNams.FirstOrDefault(x => x.IDVien == id);
                 if (nam == 2014)
                 {
                     return diemcacnam.Nam2014;
@@ -214,6 +268,29 @@ namespace Hetrogiupquyetdinh.Controllers
                 return 0;
             }
         }
+        //quy độ chênh lệch điểm về chuẩn, càng gần điểm năm cũ và lớn hơn càng tốt
+        //coi độ chênh lệch là dương
+        public double ChuanHoaChenhLechDiem(double diemdauvao, double diemcu)
+        {
+            double result = 0;
+            //quy về chuẩn từ 1->10, chênh lệch từ 1-> 30
+            double chenhlech = Math.Abs(diemdauvao - diemcu);
+            //nếu chênh lệch là 0=> trả về 10
+            if (chenhlech == 0)
+            {
+                return 10;
+            }
+            if (diemdauvao > diemcu)
+            {
+                result = 10 - (chenhlech / 15) * 10;
+            }
+            if (diemdauvao < diemcu)
+            {
+                result =(chenhlech / 15) * 10-10;
+
+            }
+            return result;
+        }
         //lấy giá trị max mỗi cột từ matran
         public string GetMaxAColumn(string[,] a, int cot)
         {
@@ -226,9 +303,9 @@ namespace Hetrogiupquyetdinh.Controllers
             {
                 //nếu tồn tại giá trị lớn hơn thì trả về số đó
                 //a.Length=30 tức 6(cột)*5(hàng)
-                if (Convert.ToDouble(a[i, cot]) > Convert.ToDouble(max))
+                if (Math.Abs(Convert.ToDouble(a[i, cot])) > Math.Abs(Convert.ToDouble(max)))
                 {
-                    max = a[i, cot];
+                    max = Convert.ToDouble(a[i, cot]).ToString("0.####");
                 }
             }
             return max;
@@ -245,9 +322,9 @@ namespace Hetrogiupquyetdinh.Controllers
             {
                 //nếu tồn tại giá trị lớn hơn thì trả về số đó
                 //a.Length=30 tức 6(cột)*5(hàng)
-                if (Convert.ToDouble(a[i, cot]) < Convert.ToDouble(min))
+                if (Math.Abs(Convert.ToDouble(a[i, cot])) <Math.Abs(Convert.ToDouble(min)))
                 {
-                    min = a[i, cot];
+                    min = Convert.ToDouble(a[i, cot]).ToString("0.####");
                 }
             }
             return min;
@@ -301,7 +378,7 @@ namespace Hetrogiupquyetdinh.Controllers
                 for (int i = 1; i < a.GetLength(0)-2; i++)
                 {
                     //tính tổng bình phương cột: cot
-                    b[i,j]=(Convert.ToDouble(a[i, j]) / Math.Sqrt(tongbinhphuong)).ToString();
+                    b[i,j]=(Convert.ToDouble(a[i, j]) / Math.Sqrt(tongbinhphuong)).ToString("0.####");
                 }
                 for (int i = a.GetLength(0) - 2; i < a.GetLength(0); i++)
                 {
@@ -349,17 +426,16 @@ namespace Hetrogiupquyetdinh.Controllers
                 for (int i = 1; i < a.GetLength(0)-2; i++)
                 {
                     //tính tổng bình phương cột: cot
-                    b[i, j] = (Convert.ToDouble(a[i, j])*Convert.ToDouble(a[dongcuoiIndex,j ])).ToString();
+                    b[i, j] = (Convert.ToDouble(a[i, j])*Convert.ToDouble(a[dongcuoiIndex,j ])).ToString("0.####");
                 }
 
             }
             return b;
 
         }
-        //public string GetMaxAColumnOfMatrantrongso()
-        //{
 
-        //}
+        //chú ý: mức độ quan trọng âm=> cần trừ khi tính S.
+
         //khoảng cách mỗi phương án tới giải pháp lí tưởng
         public string GetKhoangCachToGiaiPhapLiTuong(string[,] a,int hang, int lituong)
         {
@@ -375,7 +451,7 @@ namespace Hetrogiupquyetdinh.Controllers
                 x += (hangsosanh -hanggiaiphap)* (hangsosanh - hanggiaiphap);
             }
             
-            return Math.Sqrt(x).ToString();
+            return Math.Sqrt(x).ToString("0.####");
 
         }
         //độ tương tự
@@ -384,11 +460,16 @@ namespace Hetrogiupquyetdinh.Controllers
             double tong = Convert.ToDouble(a[hang, a.GetLongLength(1) - 2]) + Convert.ToDouble(a[hang, a.GetLongLength(1) - 3]);
             return Convert.ToDouble(a[hang, a.GetLongLength(1) - 2]) / tong;
         }
-        //lấy tên viện với điều kiện cột C(cuối cùng max)
-        //public string GetTenVie(string[,] a)
-        //{
-        //    for(int i=1;i<)
-        //}
+
+        //lấy id trường từ tên trường
+        public string GetTruongByID(int truongid)
+        {
+            using(HeTroGiupQuyetDinh1Entities db=new HeTroGiupQuyetDinh1Entities())
+            {
+                return db.Truongs.SingleOrDefault(x=>x.ID== truongid).Ten.ToString();
+            }
+        }
+    
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

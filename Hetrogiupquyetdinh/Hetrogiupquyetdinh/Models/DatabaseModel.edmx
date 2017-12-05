@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="HeTroGiupQuyetDinh1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="HeTroGiupQuyetDinh1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <!--Errors Found During Generation:
 warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="DiemCacNam">
@@ -31,6 +31,13 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           <Property Name="DiemChuan" Type="float" />
           <Property Name="Chitieu" Type="int" />
         </EntityType>
+        <EntityType Name="Khoi">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Ten" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="SoThich">
           <Key>
             <PropertyRef Name="Id" />
@@ -48,12 +55,21 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
+        <EntityType Name="Truong">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Ten" Type="nvarchar" MaxLength="200" />
+        </EntityType>
         <EntityType Name="Vien">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Ten" Type="nvarchar" MaxLength="50" />
+          <Property Name="TruongID" Type="int" />
+          <Property Name="KhoiID" Type="int" />
         </EntityType>
         <EntityType Name="Vien_SoThich">
           <Key>
@@ -88,6 +104,18 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Vien_Khoi">
+          <End Role="Khoi" Type="Self.Khoi" Multiplicity="0..1" />
+          <End Role="Vien" Type="Self.Vien" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Khoi">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Vien">
+              <PropertyRef Name="KhoiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Vien_SoThich_SoThich">
           <End Role="SoThich" Type="Self.SoThich" Multiplicity="1" />
           <End Role="Vien_SoThich" Type="Self.Vien_SoThich" Multiplicity="*" />
@@ -112,10 +140,24 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Vien_Truong">
+          <End Role="Truong" Type="Self.Truong" Multiplicity="0..1" />
+          <End Role="Vien" Type="Self.Vien" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Truong">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Vien">
+              <PropertyRef Name="TruongID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="HeTroGiupQuyetDinh1ModelStoreContainer">
           <EntitySet Name="DiemChuan" EntityType="Self.DiemChuan" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Khoi" EntityType="Self.Khoi" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SoThich" EntityType="Self.SoThich" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Truong" EntityType="Self.Truong" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vien" EntityType="Self.Vien" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vien_SoThich" EntityType="Self.Vien_SoThich" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DiemCacNam" EntityType="Self.DiemCacNam" store:Type="Tables" store:Schema="dbo">
@@ -135,6 +177,10 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
             <End Role="Vien" EntitySet="Vien" />
             <End Role="DiemChuan" EntitySet="DiemChuan" />
           </AssociationSet>
+          <AssociationSet Name="FK_Vien_Khoi" Association="Self.FK_Vien_Khoi">
+            <End Role="Khoi" EntitySet="Khoi" />
+            <End Role="Vien" EntitySet="Vien" />
+          </AssociationSet>
           <AssociationSet Name="FK_Vien_SoThich_SoThich" Association="Self.FK_Vien_SoThich_SoThich">
             <End Role="SoThich" EntitySet="SoThich" />
             <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
@@ -143,12 +189,49 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
             <End Role="Vien" EntitySet="Vien" />
             <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
           </AssociationSet>
+          <AssociationSet Name="FK_Vien_Truong" Association="Self.FK_Vien_Truong">
+            <End Role="Truong" EntitySet="Truong" />
+            <End Role="Vien" EntitySet="Vien" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="HeTroGiupQuyetDinh1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="HeTroGiupQuyetDinh1Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="DiemChuans" EntityType="HeTroGiupQuyetDinh1Model.DiemChuan" />
+          <EntitySet Name="Khois" EntityType="HeTroGiupQuyetDinh1Model.Khoi" />
+          <EntitySet Name="SoThiches" EntityType="HeTroGiupQuyetDinh1Model.SoThich" />
+          <EntitySet Name="sysdiagrams" EntityType="HeTroGiupQuyetDinh1Model.sysdiagram" />
+          <EntitySet Name="Truongs" EntityType="HeTroGiupQuyetDinh1Model.Truong" />
+          <EntitySet Name="Viens" EntityType="HeTroGiupQuyetDinh1Model.Vien" />
+          <EntitySet Name="Vien_SoThich" EntityType="HeTroGiupQuyetDinh1Model.Vien_SoThich" />
+          <EntitySet Name="DiemCacNams" EntityType="HeTroGiupQuyetDinh1Model.DiemCacNam" />
+          <AssociationSet Name="FK_DiemChuan_Vien" Association="HeTroGiupQuyetDinh1Model.FK_DiemChuan_Vien">
+            <End Role="Vien" EntitySet="Viens" />
+            <End Role="DiemChuan" EntitySet="DiemChuans" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vien_Khoi" Association="HeTroGiupQuyetDinh1Model.FK_Vien_Khoi">
+            <End Role="Khoi" EntitySet="Khois" />
+            <End Role="Vien" EntitySet="Viens" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vien_SoThich_SoThich" Association="HeTroGiupQuyetDinh1Model.FK_Vien_SoThich_SoThich">
+            <End Role="SoThich" EntitySet="SoThiches" />
+            <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vien_Truong" Association="HeTroGiupQuyetDinh1Model.FK_Vien_Truong">
+            <End Role="Truong" EntitySet="Truongs" />
+            <End Role="Vien" EntitySet="Viens" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DiemCacNa__IDVie__35BCFE0A" Association="HeTroGiupQuyetDinh1Model.FK__DiemCacNa__IDVie__35BCFE0A">
+            <End Role="Vien" EntitySet="Viens" />
+            <End Role="DiemCacNam" EntitySet="DiemCacNams" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vien_SoThich_Vien" Association="HeTroGiupQuyetDinh1Model.FK_Vien_SoThich_Vien">
+            <End Role="Vien" EntitySet="Viens" />
+            <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="DiemChuan">
           <Key>
             <PropertyRef Name="Id" />
@@ -158,7 +241,15 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           <Property Name="Nam" Type="Int32" />
           <Property Name="DiemChuan1" Type="Double" />
           <Property Name="Chitieu" Type="Int32" />
-          <NavigationProperty Name="Vien" Relationship="Self.FK_DiemChuan_Vien" FromRole="DiemChuan" ToRole="Vien" />
+          <NavigationProperty Name="Vien" Relationship="HeTroGiupQuyetDinh1Model.FK_DiemChuan_Vien" FromRole="DiemChuan" ToRole="Vien" />
+        </EntityType>
+        <EntityType Name="Khoi">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Ten" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Viens" Relationship="HeTroGiupQuyetDinh1Model.FK_Vien_Khoi" FromRole="Khoi" ToRole="Vien" />
         </EntityType>
         <EntityType Name="SoThich">
           <Key>
@@ -166,17 +257,25 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Ten" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Vien_SoThich" Relationship="Self.FK_Vien_SoThich_SoThich" FromRole="SoThich" ToRole="Vien_SoThich" />
+          <NavigationProperty Name="Vien_SoThich" Relationship="HeTroGiupQuyetDinh1Model.FK_Vien_SoThich_SoThich" FromRole="SoThich" ToRole="Vien_SoThich" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
             <PropertyRef Name="diagram_id" />
           </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="principal_id" Type="Int32" Nullable="false" />
           <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Truong">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Ten" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Viens" Relationship="HeTroGiupQuyetDinh1Model.FK_Vien_Truong" FromRole="Truong" ToRole="Vien" />
         </EntityType>
         <EntityType Name="Vien">
           <Key>
@@ -184,9 +283,13 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Ten" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="DiemChuans" Relationship="Self.FK_DiemChuan_Vien" FromRole="Vien" ToRole="DiemChuan" />
-          <NavigationProperty Name="DiemCacNams" Relationship="Self.FK__DiemCacNa__IDVie__35BCFE0A" FromRole="Vien" ToRole="DiemCacNam" />
-          <NavigationProperty Name="Vien_SoThich" Relationship="Self.FK_Vien_SoThich_Vien" FromRole="Vien" ToRole="Vien_SoThich" />
+          <Property Name="TruongID" Type="Int32" />
+          <Property Name="KhoiID" Type="Int32" />
+          <NavigationProperty Name="DiemChuans" Relationship="HeTroGiupQuyetDinh1Model.FK_DiemChuan_Vien" FromRole="Vien" ToRole="DiemChuan" />
+          <NavigationProperty Name="Khoi" Relationship="HeTroGiupQuyetDinh1Model.FK_Vien_Khoi" FromRole="Vien" ToRole="Khoi" />
+          <NavigationProperty Name="Truong" Relationship="HeTroGiupQuyetDinh1Model.FK_Vien_Truong" FromRole="Vien" ToRole="Truong" />
+          <NavigationProperty Name="DiemCacNams" Relationship="HeTroGiupQuyetDinh1Model.FK__DiemCacNa__IDVie__35BCFE0A" FromRole="Vien" ToRole="DiemCacNam" />
+          <NavigationProperty Name="Vien_SoThich" Relationship="HeTroGiupQuyetDinh1Model.FK_Vien_SoThich_Vien" FromRole="Vien" ToRole="Vien_SoThich" />
         </EntityType>
         <EntityType Name="Vien_SoThich">
           <Key>
@@ -196,8 +299,8 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           <Property Name="IdVien" Type="Int32" Nullable="false" />
           <Property Name="IdSoThich" Type="Int32" Nullable="false" />
           <Property Name="Diem" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="SoThich" Relationship="Self.FK_Vien_SoThich_SoThich" FromRole="Vien_SoThich" ToRole="SoThich" />
-          <NavigationProperty Name="Vien" Relationship="Self.FK_Vien_SoThich_Vien" FromRole="Vien_SoThich" ToRole="Vien" />
+          <NavigationProperty Name="SoThich" Relationship="HeTroGiupQuyetDinh1Model.FK_Vien_SoThich_SoThich" FromRole="Vien_SoThich" ToRole="SoThich" />
+          <NavigationProperty Name="Vien" Relationship="HeTroGiupQuyetDinh1Model.FK_Vien_SoThich_Vien" FromRole="Vien_SoThich" ToRole="Vien" />
         </EntityType>
         <EntityType Name="DiemCacNam">
           <Key>
@@ -212,11 +315,11 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           <Property Name="Nam2015" Type="Double" Nullable="false" />
           <Property Name="Nam2016" Type="Double" Nullable="false" />
           <Property Name="Nam2017" Type="Double" Nullable="false" />
-          <NavigationProperty Name="Vien" Relationship="Self.FK__DiemCacNa__IDVie__35BCFE0A" FromRole="DiemCacNam" ToRole="Vien" />
+          <NavigationProperty Name="Vien" Relationship="HeTroGiupQuyetDinh1Model.FK__DiemCacNa__IDVie__35BCFE0A" FromRole="DiemCacNam" ToRole="Vien" />
         </EntityType>
         <Association Name="FK_DiemChuan_Vien">
-          <End Role="Vien" Type="Self.Vien" Multiplicity="0..1" />
-          <End Role="DiemChuan" Type="Self.DiemChuan" Multiplicity="*" />
+          <End Type="HeTroGiupQuyetDinh1Model.Vien" Role="Vien" Multiplicity="0..1" />
+          <End Type="HeTroGiupQuyetDinh1Model.DiemChuan" Role="DiemChuan" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Vien">
               <PropertyRef Name="Id" />
@@ -226,9 +329,21 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Vien_Khoi">
+          <End Type="HeTroGiupQuyetDinh1Model.Khoi" Role="Khoi" Multiplicity="0..1" />
+          <End Type="HeTroGiupQuyetDinh1Model.Vien" Role="Vien" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Khoi">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Vien">
+              <PropertyRef Name="KhoiID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Vien_SoThich_SoThich">
-          <End Role="SoThich" Type="Self.SoThich" Multiplicity="1" />
-          <End Role="Vien_SoThich" Type="Self.Vien_SoThich" Multiplicity="*" />
+          <End Type="HeTroGiupQuyetDinh1Model.SoThich" Role="SoThich" Multiplicity="1" />
+          <End Type="HeTroGiupQuyetDinh1Model.Vien_SoThich" Role="Vien_SoThich" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SoThich">
               <PropertyRef Name="Id" />
@@ -238,9 +353,21 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Vien_Truong">
+          <End Type="HeTroGiupQuyetDinh1Model.Truong" Role="Truong" Multiplicity="0..1" />
+          <End Type="HeTroGiupQuyetDinh1Model.Vien" Role="Vien" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Truong">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Vien">
+              <PropertyRef Name="TruongID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__DiemCacNa__IDVie__35BCFE0A">
-          <End Role="Vien" Type="Self.Vien" Multiplicity="1" />
-          <End Role="DiemCacNam" Type="Self.DiemCacNam" Multiplicity="*" />
+          <End Type="HeTroGiupQuyetDinh1Model.Vien" Role="Vien" Multiplicity="1" />
+          <End Type="HeTroGiupQuyetDinh1Model.DiemCacNam" Role="DiemCacNam" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Vien">
               <PropertyRef Name="Id" />
@@ -251,8 +378,8 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Vien_SoThich_Vien">
-          <End Role="Vien" Type="Self.Vien" Multiplicity="1" />
-          <End Role="Vien_SoThich" Type="Self.Vien_SoThich" Multiplicity="*" />
+          <End Type="HeTroGiupQuyetDinh1Model.Vien" Role="Vien" Multiplicity="1" />
+          <End Type="HeTroGiupQuyetDinh1Model.Vien_SoThich" Role="Vien_SoThich" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Vien">
               <PropertyRef Name="Id" />
@@ -262,31 +389,7 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="HeTroGiupQuyetDinh1Entities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="DiemChuans" EntityType="Self.DiemChuan" />
-          <EntitySet Name="SoThiches" EntityType="Self.SoThich" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
-          <EntitySet Name="Viens" EntityType="Self.Vien" />
-          <EntitySet Name="Vien_SoThich" EntityType="Self.Vien_SoThich" />
-          <EntitySet Name="DiemCacNams" EntityType="Self.DiemCacNam" />
-          <AssociationSet Name="FK_DiemChuan_Vien" Association="Self.FK_DiemChuan_Vien">
-            <End Role="Vien" EntitySet="Viens" />
-            <End Role="DiemChuan" EntitySet="DiemChuans" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Vien_SoThich_SoThich" Association="Self.FK_Vien_SoThich_SoThich">
-            <End Role="SoThich" EntitySet="SoThiches" />
-            <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
-          </AssociationSet>
-          <AssociationSet Name="FK__DiemCacNa__IDVie__35BCFE0A" Association="Self.FK__DiemCacNa__IDVie__35BCFE0A">
-            <End Role="Vien" EntitySet="Viens" />
-            <End Role="DiemCacNam" EntitySet="DiemCacNams" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Vien_SoThich_Vien" Association="Self.FK_Vien_SoThich_Vien">
-            <End Role="Vien" EntitySet="Viens" />
-            <End Role="Vien_SoThich" EntitySet="Vien_SoThich" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -295,58 +398,76 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           <EntitySetMapping Name="DiemChuans">
             <EntityTypeMapping TypeName="HeTroGiupQuyetDinh1Model.DiemChuan">
               <MappingFragment StoreEntitySet="DiemChuan">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="IdVien" ColumnName="IdVien" />
-                <ScalarProperty Name="Nam" ColumnName="Nam" />
-                <ScalarProperty Name="DiemChuan1" ColumnName="DiemChuan" />
                 <ScalarProperty Name="Chitieu" ColumnName="Chitieu" />
+                <ScalarProperty Name="DiemChuan1" ColumnName="DiemChuan" />
+                <ScalarProperty Name="Nam" ColumnName="Nam" />
+                <ScalarProperty Name="IdVien" ColumnName="IdVien" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Khois">
+            <EntityTypeMapping TypeName="HeTroGiupQuyetDinh1Model.Khoi">
+              <MappingFragment StoreEntitySet="Khoi">
+                <ScalarProperty Name="Ten" ColumnName="Ten" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SoThiches">
             <EntityTypeMapping TypeName="HeTroGiupQuyetDinh1Model.SoThich">
               <MappingFragment StoreEntitySet="SoThich">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Ten" ColumnName="Ten" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
             <EntityTypeMapping TypeName="HeTroGiupQuyetDinh1Model.sysdiagram">
               <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Truongs">
+            <EntityTypeMapping TypeName="HeTroGiupQuyetDinh1Model.Truong">
+              <MappingFragment StoreEntitySet="Truong">
+                <ScalarProperty Name="Ten" ColumnName="Ten" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Viens">
             <EntityTypeMapping TypeName="HeTroGiupQuyetDinh1Model.Vien">
               <MappingFragment StoreEntitySet="Vien">
-                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="KhoiID" ColumnName="KhoiID" />
+                <ScalarProperty Name="TruongID" ColumnName="TruongID" />
                 <ScalarProperty Name="Ten" ColumnName="Ten" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Vien_SoThich">
             <EntityTypeMapping TypeName="HeTroGiupQuyetDinh1Model.Vien_SoThich">
               <MappingFragment StoreEntitySet="Vien_SoThich">
-                <ScalarProperty Name="IdVien" ColumnName="IdVien" />
-                <ScalarProperty Name="IdSoThich" ColumnName="IdSoThich" />
                 <ScalarProperty Name="Diem" ColumnName="Diem" />
+                <ScalarProperty Name="IdSoThich" ColumnName="IdSoThich" />
+                <ScalarProperty Name="IdVien" ColumnName="IdVien" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DiemCacNams">
             <EntityTypeMapping TypeName="HeTroGiupQuyetDinh1Model.DiemCacNam">
               <MappingFragment StoreEntitySet="DiemCacNam">
-                <ScalarProperty Name="IDVien" ColumnName="IDVien" />
-                <ScalarProperty Name="Nam2014" ColumnName="Nam2014" />
-                <ScalarProperty Name="Nam2015" ColumnName="Nam2015" />
-                <ScalarProperty Name="Nam2016" ColumnName="Nam2016" />
                 <ScalarProperty Name="Nam2017" ColumnName="Nam2017" />
+                <ScalarProperty Name="Nam2016" ColumnName="Nam2016" />
+                <ScalarProperty Name="Nam2015" ColumnName="Nam2015" />
+                <ScalarProperty Name="Nam2014" ColumnName="Nam2014" />
+                <ScalarProperty Name="IDVien" ColumnName="IDVien" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
