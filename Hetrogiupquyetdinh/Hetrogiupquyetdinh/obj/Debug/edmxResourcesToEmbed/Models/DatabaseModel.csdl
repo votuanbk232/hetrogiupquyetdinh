@@ -77,6 +77,7 @@
     </Key>
     <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="Ten" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="DiemChuan" Type="Double" />
     <NavigationProperty Name="Viens" Relationship="HeTroGiupQuyetDinh1Model.FK_Vien_Truong" FromRole="Truong" ToRole="Vien" />
   </EntityType>
   <EntityType Name="Vien">

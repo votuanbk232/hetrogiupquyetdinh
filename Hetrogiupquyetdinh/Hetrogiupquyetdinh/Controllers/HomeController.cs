@@ -278,15 +278,15 @@ namespace Hetrogiupquyetdinh.Controllers
             //nếu chênh lệch là 0=> trả về 10
             if (chenhlech == 0)
             {
-                return 10;
+                return 10; //max là 10
             }
             if (diemdauvao > diemcu)
             {
-                result = 10 - (chenhlech / 15) * 10;
+                result = 10 - (chenhlech / 15) * 10; //chạy từ 0 tới 10
             }
             if (diemdauvao < diemcu)
             {
-                result =(chenhlech / 15) * 10-10;
+                result =(chenhlech / 15) * -10; // chạy từ -10 tới 0
 
             }
             return result;
@@ -303,7 +303,7 @@ namespace Hetrogiupquyetdinh.Controllers
             {
                 //nếu tồn tại giá trị lớn hơn thì trả về số đó
                 //a.Length=30 tức 6(cột)*5(hàng)
-                if (Math.Abs(Convert.ToDouble(a[i, cot])) > Math.Abs(Convert.ToDouble(max)))
+                if (Convert.ToDouble(a[i, cot]) > Convert.ToDouble(max))
                 {
                     max = Convert.ToDouble(a[i, cot]).ToString("0.####");
                 }
@@ -322,7 +322,7 @@ namespace Hetrogiupquyetdinh.Controllers
             {
                 //nếu tồn tại giá trị lớn hơn thì trả về số đó
                 //a.Length=30 tức 6(cột)*5(hàng)
-                if (Math.Abs(Convert.ToDouble(a[i, cot])) <Math.Abs(Convert.ToDouble(min)))
+                if (Convert.ToDouble(a[i, cot]) <Convert.ToDouble(min))
                 {
                     min = Convert.ToDouble(a[i, cot]).ToString("0.####");
                 }
@@ -469,7 +469,14 @@ namespace Hetrogiupquyetdinh.Controllers
                 return db.Truongs.SingleOrDefault(x=>x.ID== truongid).Ten.ToString();
             }
         }
-    
+        //lấy điểm trường dựa vào id
+        public string GetDiemTruongByID(int truongid)
+        {
+            using(HeTroGiupQuyetDinh1Entities db=new HeTroGiupQuyetDinh1Entities())
+            {
+                return db.Truongs.SingleOrDefault(x=>x.ID==truongid).DiemChuan.ToString();
+            }
+        }
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

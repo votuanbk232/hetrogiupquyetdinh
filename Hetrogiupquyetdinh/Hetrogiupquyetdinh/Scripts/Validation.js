@@ -41,12 +41,13 @@ function IsDiemInValid() {
     }
     else { return ""; }
 }
-//function IsDiemInValid() {
-//    if (document.getElementById('TxtLName').value.length >= 5) {
-//        return 'Last Name should not contain more than 5 character';
-//    }
-//    else { return ""; }
-//}
+function IsDiemLengthInValid() {
+    if (parseFloat(document.getElementById('Diem').value) > 30 || parseFloat(document.getElementById('Diem').value) < document.getElementById("diemtruong").value) {
+        return 'Điểm cần lớn hơn hoặc bằng điểm chuẩn của trường là '+document.getElementById("diemtruong").value+' và nhỏ hơn 30';
+    }
+    else { return ""; }
+}
+
 function IsValid() {
 
     var TruongEmptyMessage = IsTruongEmpty();
@@ -54,6 +55,7 @@ function IsValid() {
     var SoThichEmptyMessage = IsSoThichEmpty();
     var DiemEmptyMessage = IsDiemEmpty();
     var DiemInvalidMessage = IsDiemInValid();
+    var IsDiemLengthInValidMessage = IsDiemLengthInValid();
 
     var FinalErrorMessage = "Errors:";
     if (TruongEmptyMessage != "")
@@ -66,6 +68,8 @@ function IsValid() {
         FinalErrorMessage += "\n" + DiemEmptyMessage;
     if (DiemInvalidMessage != "")
         FinalErrorMessage += "\n" + DiemInvalidMessage;
+    if (IsDiemLengthInValidMessage != "")
+        FinalErrorMessage += "\n" + IsDiemLengthInValidMessage;
    
 
     if (FinalErrorMessage != "Errors:") {

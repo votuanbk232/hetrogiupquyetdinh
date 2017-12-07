@@ -61,6 +61,7 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Ten" Type="nvarchar" MaxLength="200" />
+          <Property Name="DiemChuan" Type="float" />
         </EntityType>
         <EntityType Name="Vien">
           <Key>
@@ -275,6 +276,7 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Ten" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DiemChuan" Type="Double" />
           <NavigationProperty Name="Viens" Relationship="HeTroGiupQuyetDinh1Model.FK_Vien_Truong" FromRole="Truong" ToRole="Vien" />
         </EntityType>
         <EntityType Name="Vien">
@@ -436,6 +438,7 @@ warning 6002: The table/view 'HeTroGiupQuyetDinh1.dbo.DiemCacNam' does not have 
           <EntitySetMapping Name="Truongs">
             <EntityTypeMapping TypeName="HeTroGiupQuyetDinh1Model.Truong">
               <MappingFragment StoreEntitySet="Truong">
+                <ScalarProperty Name="DiemChuan" ColumnName="DiemChuan" />
                 <ScalarProperty Name="Ten" ColumnName="Ten" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

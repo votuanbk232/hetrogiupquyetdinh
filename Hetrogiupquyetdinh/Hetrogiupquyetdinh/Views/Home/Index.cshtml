@@ -24,6 +24,36 @@
 
 
     <script src="~/Scripts/Validation.js"></script>
+    <script>
+       
+        //here we will fetch states for the selected country
+        $(document).ready(function () {
+            $('#truongID').change(function () {
+
+                var truong = parseFloat($(this).val());
+
+                if (!isNaN(truong)) {
+                    $.ajax({
+                        url: '@Url.Action("GetDiemTruongByID", "Home")',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: { truongid: truong },
+                        success: function (d) {
+                            document.getElementById("diemtruong").value = d;
+                            alert("Điểm chuẩn của trường " + $("#truongID :selected").text() + " là: " + d);
+                            //console.log(document.getElementById("truongID").html());
+                            //alert($("#truongID :selected").text());
+                        },
+                        error: function () {
+                            alert('Error!');
+                        }
+                    });
+                }
+
+            });
+        });
+    </script>
+   
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -43,7 +73,7 @@
     <div class="container" style="min-height:900px;">
         <div class="row text-center">
             <h1>
-                <strong>Hệ trợ giúp quyết định chọn ngành</strong>
+                <strong>Trợ giúp thí sinh điều chỉnh nguyện vọng ngành</strong>
             </h1>
         </div>
         <div class="clearfix"></div>
@@ -81,6 +111,9 @@
                         ViewBag.Truong as SelectList, "Chọn trường",
                         new { @class = "form-control" })
                     </div>
+                <div id="diemtruong" style="display:none;">
+
+                </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-2">

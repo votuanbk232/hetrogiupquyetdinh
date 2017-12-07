@@ -42,6 +42,7 @@
     <EntitySetMapping Name="Truongs">
       <EntityTypeMapping TypeName="HeTroGiupQuyetDinh1Model.Truong">
         <MappingFragment StoreEntitySet="Truong">
+          <ScalarProperty Name="DiemChuan" ColumnName="DiemChuan" />
           <ScalarProperty Name="Ten" ColumnName="Ten" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
